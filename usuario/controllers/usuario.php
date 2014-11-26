@@ -16,13 +16,9 @@ class Usuario extends Front_Controller
     {
         $this->load->helper('typography');
         $this->load->helper('form');
-        $this->load->library('users/auth');
         $this->output->set_status_header('404');
         $this->load->view('404');
 
-
-
-        Template::render();
 
     }
     /*
@@ -34,13 +30,16 @@ class Usuario extends Front_Controller
      */
     public function add()
     {
+
         $this->load->helper('typography');
         $this->load->helper('form');
         $this->load->model('post_model');
-        echo ":D";
-        if ($this->input->post('submit'))
-        {
-            echo ":D";
+        $this->load->library('users/auth');
+
+        $post_add = $this->input->post();
+
+        if (!empty($post_add)) {
+
             $data = array(
                 'nombre'               => $this->input->post('nombre'),
                 'apellido_paterno'     => $this->input->post('apellido_paterno'),
@@ -63,11 +62,16 @@ class Usuario extends Front_Controller
                 'idUser'               => 10,
                 'slug'                 => 'abel'
             );
-
-            if ($this->db->insert('usuarios',$data)) {
-                Template::set_message('Tu blog fue subido correctamente.', 'success');
-                redirect(SITE_AREA . 'usuario');
+            $usuario = array(
+                'email'     =>  $this->input->post('email'),
+                'username'  =>  $this->input->post('username'),
+                'password'  =>  $this->input->post('password')
+            );
+            if ($this->db->insert('usuarios',$data) && $this->user_model->insert($usuario)) {
+                Template::set_message('Dado de alta correctamente.', 'success');
+                redirect('usuario/login');
             }
+
         }
 
         Template::set('toolbar_title', 'crear nuevo usuario');
@@ -88,10 +92,6 @@ class Usuario extends Front_Controller
         Template::set_view('entrar');
         Template::render();
 
-        if ($this->auth->is_logged_in())
-        {
-            redirect('../');
-        }
     }
 }
 ?>

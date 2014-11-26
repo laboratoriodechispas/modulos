@@ -1,10 +1,8 @@
-<?= Template::message(); ?>
+
 <div class="admin-box">
     <h3>New Usuario</h3>
     <?= form_open(current_url(), 'class="form-horizontal"'); ?>
     <?= form_open(REGISTER_URL); ?>
-
-
             <input type="text" name="email" class="input-xxlarge" value="<?php echo isset($post) ? $post->email : set_value('email'); ?>" placeholder="Correo"/>
 
             <input type="text" name="username" class="input-xxlarge" value="<?php echo isset($post) ? $post->email : set_value('username'); ?>" placeholder="Nombre de usuario"/>
@@ -42,7 +40,9 @@
             <input type="hidden" name="language" value="english" />
             <input type="hidden" name="timezones" value="UM6" />
             <input type="hidden" name="country" value="MX" />
+
              <input type="submit" name="register" value="Create Account">
+
 
     <?php echo form_close(); ?>
     <?php echo form_close(); ?>
