@@ -91,31 +91,30 @@ class Post_model extends MY_Model
             'field' => 'slug',
             'label' => 'Slug',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+        )
 
     );
 
     protected $insert_validation_rules = array(
-
-'nombre'=>'required',
-'apellido_paterno'=>'required',
-'apellido_materno'=>'required',
-'fecha_nacimiento'=>'required',
-'pais_nacimiento'=>'required',
-'id_estado_residencia'=>'required',
-'residencia'=>'required',
-'direccion'=>'required',
-'id_estado'=>'required',
-'colonia'=>'required',
-'delegacion_municipio'=>'required',
-'cp'=>'required',
-'edad'=>'required',
-'sexo'=>'required',
-'email'=>'required',
-'telefono_contacto'=>'required',
-'codigo'=>'required',
-'slug'=>'required',
-'pass'  => 'required'
+        'nombre'=>'required',
+        'apellido_paterno'=>'required',
+        'apellido_materno'=>'required',
+        'fecha_nacimiento'=>'required',
+        'pais_nacimiento'=>'required',
+        'id_estado_residencia'=>'required',
+        'residencia'=>'required',
+        'direccion'=>'required',
+        'id_estado'=>'required',
+        'colonia'=>'required',
+        'delegacion_municipio'=>'required',
+        'cp'=>'required',
+        'edad'=>'required',
+        'sexo'=>'required',
+        'email'=>'required',
+        'telefono_contacto'=>'required',
+        'codigo'=>'required',
+        'slug'=>'required',
+        'pass'  => 'required'
     );
 }
 ?>

@@ -7,6 +7,7 @@ class Usuario extends Front_Controller
         parent::__construct();
 
         $this->load->model('post_model');
+
     }
 
     //--------------------------------------------------------------------
@@ -14,23 +15,32 @@ class Usuario extends Front_Controller
     public function index()
     {
         $this->load->helper('typography');
-        $this->load->helper(array('form', 'url'));
+        $this->load->helper('form');
+        $this->load->library('users/auth');
+        $this->output->set_status_header('404');
+        $this->load->view('404');
 
 
-        $posts = $this->post_model->order_by('created_on', 'asc')
-            ->limit(5)
-            ->find_all();
-
-        Template::set('posts', $posts);
 
         Template::render();
+
     }
+    /*
+     * funcion encargada de agregar usuarios
+     *
+     * Esta es la funcion que se encarga de la insersion a la base de datos
+     * de los datos adicionales del usuario
+     *
+     */
     public function add()
     {
         $this->load->helper('typography');
-        $this->load->helper(array('form', 'url'));
-
-        if ($this->input->post('submit')) {
+        $this->load->helper('form');
+        $this->load->model('post_model');
+        echo ":D";
+        if ($this->input->post('submit'))
+        {
+            echo ":D";
             $data = array(
                 'nombre'               => $this->input->post('nombre'),
                 'apellido_paterno'     => $this->input->post('apellido_paterno'),
@@ -65,6 +75,23 @@ class Usuario extends Front_Controller
         Template::render();
     }
     //--------------------------------------------------------------------
+    /*
+     * funcion encargada de mostrar el login
+     *
+     * Esta es la funcion encargada del login al sistema
+     *
+     */
+    public function login()
+    {
+        $this->load->library('users/auth');
+        $this->load->helper('form');
+        Template::set_view('entrar');
+        Template::render();
 
+        if ($this->auth->is_logged_in())
+        {
+            redirect('../');
+        }
+    }
 }
 ?>
