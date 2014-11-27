@@ -13,108 +13,128 @@ class Post_model extends MY_Model
     //---------------------------------------------------------------
     protected $validation_rules = array(
         array(
+            'field' => 'email',
+            'label' => 'email',
+            'rules' => 'trim|strip_tags|xss_clean'
+            ),
+
+        array(
+            'field' => 'username',
+            'label' => 'username',
+            'rules' => 'trim|strip_tags|xss_clean'
+            ),
+
+        array(
+            'field' => 'password',
+            'label' => 'password',
+            'rules' => 'trim|strip_tags|xss_clean|matches[pass_confirm]'
+            ),
+
+        array(
+            'field' => 'pass_confirm',
+            'label' => 'confirm',
+            'rules' => 'trim|strip_tags|xss_clean'
+            ),
+
+        array(
             'field' => 'nombre',
             'label' => 'nombre',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'apellido_paterno',
-            'label' => 'Apellido Paterno',
+            'label' => 'apellido paterno',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'apellido_materno',
-            'label' => 'Apellido Materno',
+            'label' => 'apellido materno',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'fecha_nacimiento',
-            'label' => 'Fecha Nacimiento',
+            'label' => 'fecha nacimiento',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'pais_nacimiento',
-            'label' => 'Pais Nacimiento',
+            'label' => 'pais nacimiento',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'residencia',
-            'label' => 'Residencia',
+            'label' => 'residencia',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'direccion',
-            'label' => 'Direccion',
+            'label' => 'direccion',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'colonia',
-            'label' => 'Colonia',
+            'label' => 'colonia',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'delegacion_municipio',
-            'label' => 'delegacion_municipio',
+            'label' => 'delegacion municipio',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'cp',
             'label' => 'cp',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'edad',
             'label' => 'edad',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'sexo',
             'label' => 'sexo',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
-        array(
-            'field' => 'email',
-            'label' => 'email',
-            'rules' => 'trim|strip_tags|xss_clean'
-        ),
+            ),
+
         array(
             'field' => 'telefono_contacto',
-            'label' => 'telefono_contacto',
+            'label' => 'telefono contacto',
             'rules' => 'trim|strip_tags|xss_clean'
-        ),
-        array(
-            'field' => 'pass',
-            'label' => 'Contraseña',
-            'rules' => 'trim|strip_tags|xss_clean'
-        ),
-        array(
-            'field' => 'slug',
-            'label' => 'Slug',
-            'rules' => 'trim|strip_tags|xss_clean'
-        )
+            )
 
     );
 
     protected $insert_validation_rules = array(
-        'nombre'=>'required',
-        'apellido_paterno'=>'required',
-        'apellido_materno'=>'required',
-        'fecha_nacimiento'=>'required',
-        'pais_nacimiento'=>'required',
-        'id_estado_residencia'=>'required',
-        'residencia'=>'required',
-        'direccion'=>'required',
-        'id_estado'=>'required',
-        'colonia'=>'required',
-        'delegacion_municipio'=>'required',
-        'cp'=>'required',
-        'edad'=>'required',
-        'sexo'=>'required',
-        'email'=>'required',
-        'telefono_contacto'=>'required',
-        'codigo'=>'required',
-        'slug'=>'required',
-        'pass'  => 'required'
+        'email'                 => 'required',
+        'username'              => 'required',
+        'password'              => 'required',
+        'pass_confirm'          => 'required',
+        'nombre'                => 'required',
+        'apellido_paterno'      => 'required',
+        'apellido_materno'      => 'required',
+        'fecha_nacimiento'      => 'required',
+        'pais_nacimiento'       => 'required',
+        'residencia'            => 'required',
+        'direccion'             => 'required',
+        'colonia'               => 'required',
+        'delegacion_municipio'  => 'required',
+        'cp'                    => 'required',
+        'edad'                  => 'required',
+        'sexo'                  => 'required',
+        'telefono_contacto'     => 'required'
+
     );
 }
 ?>
