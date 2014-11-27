@@ -1,7 +1,12 @@
 <?php
 class Post_model extends MY_Model
 {
-
+/*
+ * variables y arrays de validacion a la hora de insertar
+ *
+ * estas variables se utilizan el controlador
+ * para hacer las diferentes validaciones
+ */
     protected $table_name   = 'usuarios';
     protected $key          = 'id_usuario';
     protected $set_created  = true;

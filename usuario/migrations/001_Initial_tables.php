@@ -1,6 +1,13 @@
 <?php
 class Migration_Initial_tables extends Migration
 {
+    /*
+     * funcion para subir las tablas
+     *
+     * esta funcion inicializa la migracion crea las tablas
+     * en este caso la tabla usuarios y los campos que se
+     * requieren para la misma
+     */
 
     public function up()
     {

@@ -31,11 +31,12 @@ class Usuario extends Front_Controller
 
 
     }
+    //--------------------------------------------------------------------
     /*
      * funcion encargada de agregar usuarios
      *
      * Esta es la funcion que se encarga de la insersion a la base de datos
-     * de los datos adicionales del usuario
+     * y de los datos adicionales del usuario
      *
      */
     public function add()
@@ -52,7 +53,13 @@ class Usuario extends Front_Controller
          * pantalla de registro
          */
         if (!empty($post_add)) {
-
+        /*
+         * comprueboo que haya mail pues es mi llave principal
+         * si viene vacio mando un mensaje y si contiene datos los
+         * compruebo con la tabla users de bonfire asignando el resultado
+         * a una variable
+         *
+         */
             if($this->input->post('email')!= ""){
 
                 $user = $this->user_model->find_by('email',$this->input->post('email'));
@@ -62,7 +69,10 @@ class Usuario extends Front_Controller
                 Template::set_message('Debes ingresar todos los datos.', 'success');
                 redirect(current_url());
             }
-
+            /*
+             * compruebo si el mail ingresado existe, sino existe en la base
+             * de datos le permito el paso
+             */
             if(!$user){
 
                 $data = array(
@@ -87,27 +97,46 @@ class Usuario extends Front_Controller
                     'idUser'               => 0,
                     'slug'                 => 'abel'
                 );
-
+                /*
+                 * compruebo la insercion en la tabla usuarios creada por mi
+                 */
                 if ($this->post_model->insert($data)) {
                     $usuario = array(
                         'email'     =>  $this->input->post('email'),
                         'username'  =>  $this->input->post('username'),
                         'password'  =>  $this->input->post('password')
                     );
-
+                    /*
+                     * compruebo la insercion a la tabla usuarios de bonfire
+                     */
                     if($this->user_model->insert($usuario)) {
 
                         $idUsuario = $this->user_model->find_by('email',$this->input->post('email'));
                         $idTarjet  = $this->post_model->find_by('email',$this->input->post('email'));
 
-
+                        /*
+                         * ejecuto la funcion update para agregar el id del usuario de bonfire
+                         * a la tabla de usuarios creada por mi
+                         */
                         if($this->updateUsuario($idUsuario->id,$idTarjet->id_usuario)) {
                             Template::set_message('Dado de alta correctamente.', 'success');
-                            //redirect('usuario/login');
+                            redirect('usuario/login');
+                            /*
+                             * sino hace el update lo vuelvo a ejecutar
+                             */
+                        }elseif($this->updateUsuario($idUsuario->id,$idTarjet->id_usuario)){//if($this->updateUsuario($idUsuario->id,$idTarjet->id_usuario)) {
+                            Template::set_message('Dado de alta correctamente.', 'success');
+                            redirect('usuario/login');
                         }
+                    }else{//if($this->user_model->insert($usuario)) {
+                        Template::set_message('Ha ocurrido un error.', 'success');
+                        redirect(current_url());
                     }
+                }else{//if ($this->post_model->insert($data)) {
+                    Template::set_message('Ha ocurrido un error.', 'success');
+                    redirect(current_url());
                 }
-            }else{
+            }else{//if(!$user){
                 Template::set_message('Este usuario ya se encuentra en nuestra base de datos.', 'success');
                 redirect(current_url());
             }
@@ -125,6 +154,7 @@ class Usuario extends Front_Controller
      * funcion encargada de mostrar el login
      *
      * Esta es la funcion encargada del login al sistema
+     * lo unico que hace es cargar una vista views/entrar
      *
      */
     public function login()
@@ -135,10 +165,12 @@ class Usuario extends Front_Controller
         Template::render();
 
     }
+    //--------------------------------------------------------------------
     /*
      * Funcion actualizar datos usuario
      *
      * Esta funcion hace un update dependiendo del id que le mandemos
+     * funcion update de post model update($idDeLaTabla,$camposModificados)
      *
      */
     private function updateUsuario($idSet,$idTarjet)

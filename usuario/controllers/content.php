@@ -1,7 +1,11 @@
 <?php
 class Content extends Admin_Controller
 {
-
+    /*
+     * funcion constructor
+     *
+     *
+     */
     public function __construct()
     {
         parent::__construct();
