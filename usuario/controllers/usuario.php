@@ -15,7 +15,7 @@ class Usuario extends Front_Controller
         $this->load->helper('form');
         $this->load->library('users/auth');
         $this->load->library('form_validation');
-
+        $this->load->helper('typography');
     }
 
     //--------------------------------------------------------------------
@@ -43,8 +43,6 @@ class Usuario extends Front_Controller
      */
     public function agregar()
     {
-
-        $this->load->helper('typography');
 
         $post_add = $this->input->post();
         /*
@@ -123,6 +121,7 @@ class Usuario extends Front_Controller
                 }else{//if ($this->post_model->insert($data)) {
                     Template::set_message('Ha ocurrido un error.', 'error');
                 }
+
 
         }
 
@@ -320,6 +319,32 @@ class Usuario extends Front_Controller
                 return true;
             }
 
+    }
+    public function webservice(){
+        function webservice_get()
+        {
+
+            $data = array('returned: '. $this->get('id'));
+            $this->response($data);
+        }
+
+        function webservice_post()
+        {
+            $data = array('returned: '. $this->post('id'));
+            $this->response($data);
+        }
+
+        function webservice_put()
+        {
+            $data = array('returned: '. $this->put('id'));
+            $this->response($data);
+        }
+
+        function webservice_delete()
+        {
+            $data = array('returned: '. $this->delete('id'));
+            $this->response($data);
+        }
     }
 }
 ?>
