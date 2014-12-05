@@ -1,4 +1,5 @@
 <?php
+
 class Usuario extends Front_Controller
 {
     /*
@@ -28,6 +29,7 @@ class Usuario extends Front_Controller
      */
     public function index()
     {
+
         $this->load->helper('typography');
         $this->output->set_status_header('404');
         $this->load->view('404');
@@ -320,31 +322,6 @@ class Usuario extends Front_Controller
             }
 
     }
-    public function webservice(){
-        function webservice_get()
-        {
 
-            $data = array('returned: '. $this->get('id'));
-            $this->response($data);
-        }
-
-        function webservice_post()
-        {
-            $data = array('returned: '. $this->post('id'));
-            $this->response($data);
-        }
-
-        function webservice_put()
-        {
-            $data = array('returned: '. $this->put('id'));
-            $this->response($data);
-        }
-
-        function webservice_delete()
-        {
-            $data = array('returned: '. $this->delete('id'));
-            $this->response($data);
-        }
-    }
 }
 ?>
