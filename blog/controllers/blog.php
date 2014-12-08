@@ -7,26 +7,17 @@ class Blog extends Front_Controller
         parent::__construct();
 
         $this->load->model('post_model');
+        $this->load->library("Nusoap_library");
     }
 
     //--------------------------------------------------------------------
 
     public function index()
     {
-        $this->load->helper('typography');
-		$this->load->helper('form');
-		
 
-        $posts = $this->post_model->order_by('created_on', 'asc')
-            ->limit(5)
-            ->find_all();
 
-        Template::set('posts', $posts);
 
-        Template::render();
     }
-
-    //--------------------------------------------------------------------
-
 }
+
 ?>

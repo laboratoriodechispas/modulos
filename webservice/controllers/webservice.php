@@ -17,7 +17,7 @@ class webservice extends \REST_Controller{
         $this->load->model('webservice_model');
     }
 
-public function users(){
+public function usuarios(){
     new users();
 }
 
