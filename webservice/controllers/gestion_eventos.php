@@ -23,6 +23,67 @@ class Gestion_eventos extends \REST_Controller{
         $this->load->model('tipo_evento_model');
     }//end function __construct(){
 
+
+    /*
+     * traer todos los eventos
+     *
+     * Funcion encargada de traer todos los eventos
+     * (todos) que no tengan estatus delete
+     */
+    public function get_all_evento_post()
+    {
+        $eventos = $this->eventos_model->where('deleted', 0)->order_by("created_on", "desc")->find_all();
+
+        $data = array('response' => 'ok','data'=>$eventos);
+        $this->response($data);
+    }// end get_all_evento_post()
+
+
+    /*
+     * buscar eventos
+     *
+     * Funcion encargada de buscar eventos si falta cualquiera de los datos se asinara uno
+     * por defaul
+     */
+    public function find_evento_post()
+    {
+        $tamano_pagina = ($this->post('tamano'))?($this->post('tamano')):0;
+        $buscar        = ($this->post('buscar'))?$this->post('buscar'):"";
+        $order         = ($this->post('asc'))?$this->post('asc'):0;
+
+        if($order == 0){
+            $cadena_order  = "desc";
+        }elseif($order == 1){
+            $cadena_order  = "asc";
+        }
+
+        if($tamano_pagina == 0)
+        {
+            //todos
+            $eventos = $this->eventos_model->where('deleted',0)->find_all();
+            $data = array('response' => 'ok','data'=>$eventos);
+        }//end  if($tamano_pagina ==0)
+        else
+        {
+
+            if($buscar != "")
+            {
+
+                $eventos = $this->eventos_model->where('deleted',0)->like('nombre_evento',$buscar)->limit($tamano_pagina)->order_by("created_on", $cadena_order)->find_all();
+                $data = array('response' => 'ok','data'=>$eventos);
+
+            }//end if($buscar != "")
+            else
+            {
+                $data = array('response' => 'error','message'=>'Debes ingresar un criterio de busqueda');
+            }//end elseif($inicio)
+
+        }//end else
+
+        $this->response($data);
+
+    }
+
     /*
      * agregar un evento
      *
@@ -54,21 +115,21 @@ class Gestion_eventos extends \REST_Controller{
             if ($this->eventos_model->insert($data))
             {
                 $data = array('response' => 'ok');
-                $this->response($data);
+
             }
             else
             {//end if ($this->eventos_model->insert($data)) {
                 $data = array('response' => 'error','message'=>'La insercion no se pudo realizar');
-                $this->response($data);
+
             }//end else
         }//end if($post_add) {
         else
         {
             $data = array('response' => 'error','message'=>'Sin datos');
-            $this->response($data);
+
         }//end else
         // Create post object
-
+        $this->response($data);
     }//end  public function agregar_evento_post(){
 
 
@@ -104,16 +165,16 @@ class Gestion_eventos extends \REST_Controller{
             {
 
                         $data = array('response' => 'ok');
-                        $this->response($data);
+
 
             } // if ($this->eventos_model->update($this->post('id'), $data)) {
             else
             {
                 $data = array('response' => 'error','message'=>'error en update verifica los campos');
-                $this->response($data);
+
             }//end else
         }//end if($post_add)
-
+        $this->response($data);
     }//update_evento_post(){
 
     /*
@@ -135,13 +196,14 @@ class Gestion_eventos extends \REST_Controller{
             unset($evento['data']->status);
 
             $data = array('response' => 'ok','data'=>$evento['data']);
-            $this->response($data);
+
         }//end if($evento)
         else
         {
             $data = array('response' => 'error','message'=>'el nombre no se encuentra en la base de datos');
-            $this->response($data);
+
         }//end else
+        $this->response($data);
     }//end function get_info_evento_post(){
 
 
@@ -163,15 +225,17 @@ class Gestion_eventos extends \REST_Controller{
             if ($deleted_post_model)
             {
                 $data = array('response' => 'ok');
-                $this->response($data);
+
             }//end if ($deleted_post_model)
             else
             {
                 $data = array('response' => 'error','message'=>'no se pudo borrar el campo');
-                $this->response($data);
+
             }//end else
         }//end if($post_add)
+        $this->response($data);
     }//end function  delete_evento_post(){
+
 
 
     /*
@@ -217,14 +281,15 @@ class Gestion_eventos extends \REST_Controller{
             if($this->tipo_evento_model->insert($data))
             {
                 $data = array('response' => 'ok');
-                $this->response($data);
+
             }//end  if($this->tipo_evento_model->insert($data))
             else
             {
                 $data = array('response' => 'error','message'=>'Error en insercion');
-                $this->response($data);
+
             }//end else
         }//end if($post_add)
+        $this->response($data);
     }//end function add_tipo_evento_post()
 
     /*
@@ -245,14 +310,15 @@ class Gestion_eventos extends \REST_Controller{
             if($this->tipo_evento_model->update($this->post('id_tipo_evento'), $data))
             {
                 $data = array('response' => 'ok');
-                $this->response($data);
+
             }//end if($this->tipo_evento_model->update($this->post('id_tipo_evento'), $data))
             else
             {
                 $data = array('response' => 'error','message'=>'Error en update');
-                $this->response($data);
+
             }//end else
         }//end if($post_add)
+        $this->response($data);
     }//end function update_tipo_evento_post()
 
 
@@ -265,20 +331,21 @@ class Gestion_eventos extends \REST_Controller{
      */
     public function get_id_tipo_evento_post()
     {
-        $tipo_evento = $this->tipo_evento_model->find_by(array('tipo'=>$this->post('tipo_evento'),'bf_tbl_tipo_evento.deleted'=>0));
+        $evento = $this->post('tipo_evento');
+        $tipo_evento = $this->tipo_evento_model->where('deleted',0)->like('tipo',$evento)->find_all();
 
         if($tipo_evento)
         {
-            $data = array('response' => 'ok','id'=>$tipo_evento->id);
-            $this->response($data);
+            $data = array('response' => 'ok','id'=>$tipo_evento[0]->id);
+
         }//end if($tipo_evento)
         else
         {
             $data = array('response' => 'error','message'=>'Error en servidor/de conexion o no hay datos que mostrar');
-            $this->response($data);
-        }//else
-    }//end function get_id_tipo_evento_post()
 
+        }//else
+        $this->response($data);
+    }//end function get_id_tipo_evento_post()
 
     /*
      * Obtiene tipo de evento
@@ -293,13 +360,14 @@ class Gestion_eventos extends \REST_Controller{
         if($tipo_evento)
         {
             $data = array('response' => 'ok','data'=>$tipo_evento);
-            $this->response($data);
+
         }// end if($tipo_evento)
         else
         {
             $data = array('response' => 'error','message'=>'Error en servidor/de conexion o no hay datos que mostrar');
-            $this->response($data);
+
         }//end else
+        $this->response($data);
     }//end function get_tipo_evento_post()
 
     public function  delete_tipo_evento_post()
@@ -313,14 +381,15 @@ class Gestion_eventos extends \REST_Controller{
             if ($deleted_post_model)
             {
                 $data = array('response' => 'ok');
-                $this->response($data);
+
             }//end if ($deleted_post_model)
             else
             {
                 $data = array('response' => 'error','message'=>'no se pudo borrar el campo');
-                $this->response($data);
+
             }//end else
         }//end if($post_add)
+        $this->response($data);
     }//end function  delete_evento_post(){
 
 
