@@ -63,6 +63,7 @@ class Gestion_preguntas extends \REST_Controller
         $this->response($data);
     }//end function add_pregunta_post()
 
+
     /*
      * editar pregunta
      *
@@ -76,8 +77,8 @@ class Gestion_preguntas extends \REST_Controller
         if($post_add)
         {
             $data = array(
-                'pregunta'    => $this->post("pregunta")
-
+                'pregunta'    => $this->post("pregunta"),
+                'id_evento'   => $this->post("id_evento")
 
             );
             /*
@@ -97,8 +98,49 @@ class Gestion_preguntas extends \REST_Controller
 
             }//end else
         }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'Sin datos');
+
+        }//end else
         $this->response($data);
     }
+
+
+    /*
+     * eliminar pregunta
+     *
+     * funcion encargada de eliminar una pregunta
+     * es necesario el id para que esto suceda
+     */
+    public function delete_pregunta_post()
+    {
+        $post_add = $this->post();
+        if($post_add)
+        {
+
+            $id_pregunta  = $this->post("id_pregunta");
+
+
+            $pregunta = $this->preguntas_model->delete($id_pregunta);
+            if($pregunta)
+            {
+                $data = array('response' => 'ok');
+            } // if($pregunta)
+            else
+            {
+                $data = array('response' => 'error','message'=>'No se puede eliminar o no existe ese id');
+
+            }//end else
+        }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'Sin datos');
+
+        }//end else
+        $this->response($data);
+    }//end function delete_pregunta_post(){
+
 
     /*
      * obtener info
@@ -109,34 +151,106 @@ class Gestion_preguntas extends \REST_Controller
      * uso este metodo pues las preguntas pueden repetirse mas el
      * id_evento deberia servir como un control adicional
      */
-
-    public function get_info_pregunta_post(){
+    public function get_info_pregunta_post()
+    {
         $post_add = $this->post();
         if($post_add)
         {
-            $data = array(
-                'id_evento' => $this->post("id_evento"),
-                'pregunta'    => $this->post("pregunta"),
 
+                $id_evento  = $this->post("id_evento");
+                $pregunta   = $this->post("pregunta");
 
-            );
-            /*
-             * compruebo la actualizacion en la tabla eventos
-             */
-
-            if ($this->preguntas_model->where($this->post('id_evento'), $data))
+            $pregunta = $this->preguntas_model->where(array('deleted'=>0,'id_evento'=>$id_evento))->like('pregunta',$pregunta)->find_all();
+            if($pregunta)
             {
-
-                $data = array('response' => 'ok');
-
-
-            } // if ($this->eventos_model->update($this->post('id'), $data)) {
+                $data = array('response' => 'ok','data'=>$pregunta);
+            } // if($pregunta)
             else
             {
-                $data = array('response' => 'error','message'=>'error en update verifica los campos');
+                $data = array('response' => 'error','message'=>'No se encuentra la pregunta, verifica los campos');
 
             }//end else
         }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'Sin datos');
+
+        }//end else
         $this->response($data);
-    }
+    }//function get_info_pregunta_post(){
+
+
+    /*
+     * obtener preguntas
+     *
+     * Funcion en cargada de retornar las preguntas
+     * acorde al id de un evento si no se determina retornara todas las preguntas
+     */
+    public function get_pregunta_post()
+    {
+        $post_add = $this->post();
+        if($post_add)
+        {
+
+            $id_evento  = ($this->post("id_evento"))?$this->post("id_evento"):0;
+
+            if($id_evento==0){
+                $pregunta = $this->preguntas_model->where(array('deleted'=>0))->find_all();
+            }else{
+                $pregunta = $this->preguntas_model->where(array('deleted'=>0,'id_evento'=>$id_evento))->find_all();
+            }
+
+            if($pregunta)
+            {
+                $data = array('response' => 'ok','data'=>$pregunta);
+            } // if($pregunta)
+            else
+            {
+                $data = array('response' => 'error','message'=>'No se encuentra la pregunta, verifica los campos');
+
+            }//end else
+        }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'Sin datos');
+
+        }//end else
+        $this->response($data);
+    }//end function get_preguntas_post(){
+
+    /*
+     * obtener el id de una pregunta
+     *
+     * Funcion encargada de retornar solo el id de una pregunta
+     * requiere 2 campos:
+     * 1. la pregunta
+     * 2. el id del evento
+     */
+    public function get_id_pregunta_post()
+    {
+        $post_add = $this->post();
+        if($post_add)
+        {
+
+            $id_evento  = $this->post("id_evento");
+            $pregunta   = $this->post("pregunta");
+            
+            $pregunta = $this->preguntas_model->select('id')->where(array('deleted'=>0,'id_evento'=>$id_evento))->like('pregunta',$pregunta)->find_all();
+            if($pregunta)
+            {
+                $data = array('response' => 'ok','data'=>$pregunta);
+            } // if($pregunta)
+            else
+            {
+                $data = array('response' => 'error','message'=>'No se encuentra la pregunta, verifica los campos');
+
+            }//end else
+        }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'Sin datos');
+
+        }//end else
+        $this->response($data);
+    }//end get_id_pregunta_post()
 }
