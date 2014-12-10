@@ -15,11 +15,8 @@ class webservice extends \REST_Controller{
        parent::__construct();
         $this->load->library('users/auth');
         $this->load->model('webservice_model');
-    }
 
-public function usuarios(){
-    new users();
-}
+    }
 
 
 }

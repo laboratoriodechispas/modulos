@@ -186,14 +186,14 @@ class users extends \REST_Controller{
                      * ejecuto la funcion update para agregar el id del usuario de bonfire
                      * a la tabla de usuarios creada por mi
                      */
-                    if ($this->updateUsuario($idUsuario->id, $idTarjet->id_usuario,$slug)) {
+                    if ($this->update_user($idUsuario->id, $idTarjet->id_usuario,$slug)) {
                         $data = array('response'=>'ok');
                         $this->response($data);
 
                         /*
                          * sino hace el update lo vuelvo a ejecutar
                          */
-                    } elseif ($this->updateUsuario($idUsuario->id, $idTarjet->id_usuario,$slug)) {//if($this->updateUsuario($idUsuario->id,$idTarjet->id_usuario)) {
+                    } elseif ($this->update_user($idUsuario->id, $idTarjet->id_usuario,$slug)) {//if($this->update_user($idUsuario->id,$idTarjet->id_usuario)) {
                         $data = array('response'=>'ok');
                         $this->response($data);
                     }
@@ -250,6 +250,7 @@ class users extends \REST_Controller{
      */
     public function update_user_post()
     {
+
         $post_add = $this->post();
         if($post_add)
         {
@@ -307,7 +308,7 @@ class users extends \REST_Controller{
             }
         }
 
-    }
+    }//end function update_user_post(){
     /*
      * funcion verificar usuario
      *
@@ -332,7 +333,7 @@ class users extends \REST_Controller{
      * hace un update del slug y del id para que ambos coincidan
      * id de tabla users(bonfire) y usuarios
      */
-    private function updateUsuario($idSet,$idTarjet,$slug)
+    private function update_user($idSet,$idTarjet,$slug)
     {
 
         $data = array(
@@ -344,6 +345,6 @@ class users extends \REST_Controller{
             return true;
         }
 
-    }//end function updateUsuario($idSet,$idTarjet,$slug)
+    }//end function update_user($idSet,$idTarjet,$slug)
 
 } 
