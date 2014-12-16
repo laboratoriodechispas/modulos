@@ -8,7 +8,7 @@
 
 require(APPPATH.'libraries/REST_Controller.php');
 
-class Gestion_preguntas extends \REST_Controller
+class Gestion_respuestas extends \REST_Controller
 {
     /*
      * constructor
@@ -20,7 +20,7 @@ class Gestion_preguntas extends \REST_Controller
     {
         parent::__construct();
         $this->load->library('users/auth');
-        $this->load->model('preguntas_model');
+        $this->load->model('respuestas_model');
 
     }//end function __construct(){
 
@@ -30,7 +30,7 @@ class Gestion_preguntas extends \REST_Controller
      * Funcion encargada de insertar una pregunta en tbl_preguntas
      * necesita del id del evento
      */
-    public function add_pregunta_post()
+    public function add_respuesta_post()
     {
 
         $post_add = $this->post();
@@ -38,12 +38,14 @@ class Gestion_preguntas extends \REST_Controller
         if($post_add)
         {
             $data = array(
-
-                'pregunta'  => $this->post("pregunta"),
-                'id_evento' => $this->post("id_evento")
+                'id_pregunta' => $this->post("id_pregunta"),
+                'id_evento'   => $this->post("id_evento"),
+                'id_usuario'  => $this->post("id_usuario"),
+                'respuesta'   => $this->post("respuesta")
             );
+
             /*verifico la insercion*/
-            if ($this->preguntas_model->insert($data))
+            if ($this->respuestas_model->insert($data))
             {
                 $data = array('response' => 'ok');
 
@@ -157,8 +159,8 @@ class Gestion_preguntas extends \REST_Controller
         if($post_add)
         {
 
-                $id_evento  = $this->post("id_evento");
-                $pregunta   = $this->post("pregunta");
+            $id_evento  = $this->post("id_evento");
+            $pregunta   = $this->post("pregunta");
 
             $pregunta = $this->preguntas_model->where(array('deleted'=>0,'id_evento'=>$id_evento))->like('pregunta',$pregunta)->find_all();
             if($pregunta)
