@@ -20,7 +20,7 @@ $this->dbforge->create_table('posts');
 // Create the Permissions
 $this->load->model('permission_model');
 $this->permission_model->insert(array(
-'name'          => 'Bonfire.Blog.View',
+'name'          => 'Bonfire.Eventos.View',
 'description'   => 'To view the blog menu.',
 'status'        => 'active'
 ));

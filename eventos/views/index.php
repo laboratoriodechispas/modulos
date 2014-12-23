@@ -25,7 +25,7 @@
                 <tr>
                     <td><input type="checkbox" name="checked[]" value="<?php echo $post->post_id ?>" /></td>
                     <td>
-                        <a href="<?php echo site_url(SITE_AREA .'/content/blog/edit_post/'. $post->post_id) ?>">
+                        <a href="<?php echo site_url(SITE_AREA .'/content/eventos/edit_post/'. $post->post_id) ?>">
                             <?php e($post->title); ?>
                         </a>
                     </td>

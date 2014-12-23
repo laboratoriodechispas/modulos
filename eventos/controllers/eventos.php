@@ -1,5 +1,5 @@
 <?php
-class Blog extends Front_Controller
+class Eventos extends Front_Controller
 {
 
     public function __construct()
@@ -7,7 +7,7 @@ class Blog extends Front_Controller
         parent::__construct();
 
         $this->load->model('post_model');
-        $this->load->library("Nusoap_library");
+
     }
 
     //--------------------------------------------------------------------

@@ -1,5 +1,5 @@
 <?php
-class Migration_respuestas_def_table extends Migration
+class Migration_preguntas_def_table extends Migration
 {
     /*
      * funcion para subir las tablas
@@ -14,27 +14,26 @@ class Migration_respuestas_def_table extends Migration
         $this->load->dbforge();
 
         $this->dbforge->add_field('id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT');
+        $this->dbforge->add_field('pregunta VARCHAR(255) NOT NULL');
         $this->dbforge->add_field('id_evento INT(11) NOT NULL');
-        $this->dbforge->add_field('id_pregunta VARCHAR(255) NOT NULL');
-        $this->dbforge->add_field('respuesta VARCHAR(255) NOT NULL');
         $this->dbforge->add_field('created_on DATETIME NOT NULL');
         $this->dbforge->add_field('modified_on DATETIME NULL');
         $this->dbforge->add_field('deleted TINYINT(1) NOT NULL DEFAULT 0');
         $this->dbforge->add_key('id', TRUE);
 
-        $this->dbforge->create_table('tbl_respuestas_def');
+        $this->dbforge->create_table('tbl_preguntas_def');
 
 // Create the Permissions
         $this->load->model('permission_model');
         $this->permission_model->insert(array(
-            'name'          => 'Bonfire.tbl_respuestas_def.View',
+            'name'          => 'Bonfire.tbl_preguntas_def.View',
             'description'   => 'To view the user menu.',
             'status'        => 'active'
         ));
 
 // Assign them to the admin role
         $this->load->model('role_permission_model');
-        $this->role_permission_model->assign_to_role('Administrator', 'Bonfire.tbl_respuestas_def.View');
+        $this->role_permission_model->assign_to_role('Administrator', 'Bonfire.tbl_preguntas_def.View');
     }
 
 //--------------------------------------------------------------------
@@ -43,7 +42,7 @@ class Migration_respuestas_def_table extends Migration
     {
         $this->load->dbforge();
 
-        $this->dbforge->drop_table('tbl_respuestas_def');
+        $this->dbforge->drop_table('tbl_preguntas_def');
     }
 
 //--------------------------------------------------------------------

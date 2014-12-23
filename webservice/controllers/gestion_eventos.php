@@ -38,6 +38,65 @@ class Gestion_eventos extends \REST_Controller{
         $this->response($data);
     }// end get_all_evento_post()
 
+    /**
+     * Traer eventos actuales
+     *
+     * Funcion encargada de traer los eventos posteriores a la fecha de hoy
+     *
+     */
+    public function get_eventos_now_post()
+    {
+
+        $eventos = $this->eventos_model->where(array('deleted'=> 0))->order_by("created_on", "desc")->find_all();
+
+        $obj = array();
+
+        foreach($eventos as $evento)
+        {
+            $fecha = strtotime($evento->fecha);
+            $fecha = date('d-m-Y',$fecha);
+            $hoy   = date('d-m-y');
+
+            if($fecha > $hoy)
+            {
+                array_push($obj,$evento);
+
+            }
+        }
+
+        $data = array('response' => 'ok','data'=>$obj);
+        $this->response($data);
+    }//end function get_eventos_now_post()
+
+    /**
+     * Traer eventos pasados
+     *
+     * Funcion encargada de traer los eventos anteriores a la fecha de hoy
+     *
+     */
+    public function get_eventos_old_post()
+    {
+
+        $eventos = $this->eventos_model->where(array('deleted'=> 0))->order_by("created_on", "desc")->find_all();
+
+        $obj = array();
+
+        foreach($eventos as $evento)
+        {
+            $fecha = strtotime($evento->fecha);
+            $fecha = date('d-m-Y',$fecha);
+            $hoy   = date('d-m-y');
+
+            if($fecha < $hoy)
+            {
+                array_push($obj,$evento);
+
+            }
+        }
+
+        $data = array('response' => 'ok','data'=>$obj);
+        $this->response($data);
+    }//end function get_eventos_old_post()
 
     /*
      * buscar eventos
@@ -55,28 +114,35 @@ class Gestion_eventos extends \REST_Controller{
             $buscar = ($this->post('buscar')) ? $this->post('buscar') : "";
             $order = ($this->post('asc')) ? $this->post('asc') : 0;
 
-            if ($order == 0) {
+            if ($order == 0)
+            {
                 $cadena_order = "desc";
-            } elseif ($order == 1) {
+            } //end if ($order == 0)
+            elseif ($order == 1)
+            {
                 $cadena_order = "asc";
-            }
+            }//end elseif ($order == 1)
 
-            if ($tamano_pagina == 0) {
+            if ($tamano_pagina == 0)
+            {
                 //todos
                 $eventos = $this->eventos_model->where('deleted', 0)->find_all();
                 $data = array('response' => 'ok', 'data' => $eventos);
             }//end  if($tamano_pagina ==0)
-            else {
+            else
+            {
 
-                if ($buscar != "") {
+                if ($buscar != "")
+                {
 
                     $eventos = $this->eventos_model->where('deleted', 0)->like('nombre_evento', $buscar)->limit($tamano_pagina)->order_by("created_on", $cadena_order)->find_all();
                     $data = array('response' => 'ok', 'data' => $eventos);
 
                 }//end if($buscar != "")
-                else {
+                else
+                {
                     $data = array('response' => 'error', 'message' => 'Debes ingresar un criterio de busqueda');
-                }//end elseif($inicio)
+                }//end else
 
             }//end else
 
@@ -122,9 +188,9 @@ class Gestion_eventos extends \REST_Controller{
             {
                 $data = array('response' => 'ok');
 
-            }
+            }//end if ($this->eventos_model->insert($data)) {
             else
-            {//end if ($this->eventos_model->insert($data)) {
+            {
                 $data = array('response' => 'error','message'=>'La insercion no se pudo realizar');
 
             }//end else
@@ -134,7 +200,7 @@ class Gestion_eventos extends \REST_Controller{
             $data = array('response' => 'error','message'=>'Sin datos');
 
         }//end else
-        // Create post object
+
         $this->response($data);
     }//end  public function agregar_evento_post(){
 
@@ -173,7 +239,7 @@ class Gestion_eventos extends \REST_Controller{
                         $data = array('response' => 'ok');
 
 
-            } // if ($this->eventos_model->update($this->post('id'), $data)) {
+            } // end if ($this->eventos_model->update($this->post('id'), $data))
             else
             {
                 $data = array('response' => 'error','message'=>'error en update verifica los campos');
@@ -186,7 +252,7 @@ class Gestion_eventos extends \REST_Controller{
 
         }//end else
         $this->response($data);
-    }//update_evento_post(){
+    }//end function update_evento_post()
 
     /*
      * obtener informacion del evento
@@ -203,20 +269,20 @@ class Gestion_eventos extends \REST_Controller{
         $post_add = $this->post();
         if($post_add)
         {
-        $evento = $this->check_event($this->post("nombre_evento"));
-        if($evento['response'])
-        {
-            unset($evento['data']->deleted);
-            unset($evento['data']->status);
+            $evento = $this->check_event($this->post("nombre_evento"));
+            if($evento['response'])
+            {
+                unset($evento['data']->deleted);
+                unset($evento['data']->status);
 
-            $data = array('response' => 'ok','data'=>$evento['data']);
+                $data = array('response' => 'ok','data'=>$evento['data']);
 
-        }//end if($evento)
-        else
-        {
-            $data = array('response' => 'error','message'=>'el nombre no se encuentra en la base de datos');
+            }//end if($evento)
+            else
+            {
+                $data = array('response' => 'error','message'=>'el nombre no se encuentra en la base de datos');
 
-        }//end else
+            }//end else
         }//end if($post_add)
         else
         {
@@ -224,7 +290,7 @@ class Gestion_eventos extends \REST_Controller{
 
         }//end else
         $this->response($data);
-    }//end function get_info_evento_post(){
+    }//end function get_info_evento_post()
 
 
 
@@ -259,7 +325,7 @@ class Gestion_eventos extends \REST_Controller{
 
         }//end else
         $this->response($data);
-    }//end function  delete_evento_post(){
+    }//end function  delete_evento_post()
 
 
 
@@ -281,7 +347,7 @@ class Gestion_eventos extends \REST_Controller{
         {
             return array('response'=>false);
         }//end else
-    } //end function check_event($nombre){
+    } //end function check_event($nombre)
 
 /******************************************************************************
  *                                                                             *

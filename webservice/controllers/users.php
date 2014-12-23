@@ -16,6 +16,7 @@ class users extends \REST_Controller{
         $this->load->library('users/auth');
         $this->load->model('webservice_model');
     }
+
     /*
          * Funcion buscar usuario
          *
@@ -31,13 +32,13 @@ class users extends \REST_Controller{
             {
                 $data = $user;
                 $this->response($data);
-            }
+            }//end if ($user)
             else
             {
                 $data = array('response' => 'error','message'=>'Usuario no encontrado o se dio de baja');
                 $this->response($data);
-            }
-        }
+            }//end else
+        }//end if($post_add)
     }//end function buscar_user_by_email_post
 
     /*
@@ -57,8 +58,7 @@ class users extends \REST_Controller{
             $email = $this->post('email') ? $this->post('email') : 'null';
             $pass = $this->post('password') ? $this->post('password') : 'null';
 
-            if ($email != 'null' && $pass != 'null')
-            {
+
                 $user = $this->check_user($email);
 
                 if ($user['response'])
@@ -69,27 +69,27 @@ class users extends \REST_Controller{
 
                         unset($user['user']->password_hash);
                         unset($user['user']->language);
-
-                        $this->response($user);
-                    }
+                        $data = array('response' => 'ok','data'=>$user);
+                    }//end if ($this->auth->check_password($pass, $user['user']->password_hash))
                     else
                     {
                         $data = array('response' => 'error');
-                        $this->response($data);
-                    }
-                }
+
+                    }//end else
+                }//end if ($user['response'])
                 else
                 {
                     $data = array('response' => 'error','message'=>'Usuario no encontrado');
-                    $this->response($data);
-                }
-            }
-            else
-            {
-                $data = array('response' => 'error','message'=>'Faltan campos');
-                $this->response($data);
-            }
-        }
+
+                }//end else
+
+
+        }//end  if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'faltan datos');
+        }//end  else
+        $this->response($data);
     }//end function login_post()
 
     /*
@@ -107,15 +107,20 @@ class users extends \REST_Controller{
             unset($user->id_usuario);
             if ($user)
             {
-                $data = array('user' => $user, 'response' => 'ok');
-                $this->response($data);
-            }
+                $data = array('data' => $user, 'response' => 'ok');
+
+            }//end  if ($user)
             else
             {
                 $data = array('response' => 'error','message'=>'El usuario o existe en base de datos o se dio de baja');
-                $this->response($data);
-            }
-        }
+
+            }//end else
+        }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'faltan datos');
+        }//end else
+        $this->response($data);
     }//end function get_info_user_post
 
     /*
@@ -133,16 +138,17 @@ class users extends \REST_Controller{
         if (!empty($post_add))
         {
             $email = $this->post('email') ? $this->post('email') : 'null';
-            if($email == 'null'){
+            if($email == 'null')
+            {
                 $data = array('response'=>'error','mesagge'=>'Falta correo');
                 $this->response($data);
-            }
+            }//end if($email == 'null')
             $user = $this->check_user($this->post('email'));
             if($user['response'])
             {
                 $data = array('response'=>'error','mesagge'=>'Correo duplicado');
                 $this->response($data);
-            }
+            }//end if($user['response'])
             $data = array(
                 'nombre'               => $this->post('nombre'),
                 'apellido_paterno'     => $this->post('apellido_paterno'),
@@ -186,32 +192,40 @@ class users extends \REST_Controller{
                      * ejecuto la funcion update para agregar el id del usuario de bonfire
                      * a la tabla de usuarios creada por mi
                      */
-                    if ($this->update_user($idUsuario->id, $idTarjet->id_usuario,$slug)) {
+                    if ($this->update_user($idUsuario->id, $idTarjet->id_usuario,$slug))
+                    {
                         $data = array('response'=>'ok');
-                        $this->response($data);
+
 
                         /*
                          * sino hace el update lo vuelvo a ejecutar
                          */
-                    } elseif ($this->update_user($idUsuario->id, $idTarjet->id_usuario,$slug)) {//if($this->update_user($idUsuario->id,$idTarjet->id_usuario)) {
+                    } //end if ($this->update_user($idUsuario->id, $idTarjet->id_usuario,$slug))
+                    elseif ($this->update_user($idUsuario->id, $idTarjet->id_usuario,$slug))
+                    {
                         $data = array('response'=>'ok');
-                        $this->response($data);
-                    }
 
-                }
+                    }//end elseif ($this->update_user($idUsuario->id, $idTarjet->id_usuario,$slug))
+
+                }//end  if ($this->user_model->insert($usuario))
                 else
                 {//if($this->user_model->insert($usuario)) {
                     $data = array('response'=>'error','message'=>'error en insercion');
-                    $this->response($data);
-                }
 
-            }
+                }//end  else
+
+            }//end if ($this->webservice_model->insert($data))
             else
-            {//if ($this->webservice_model->insert($data)) {
+            {
                 $data = array('response'=>'error','mesagge'=>'Correo duplicado');
-                $this->response($data);
-            }
-        }
+
+            }//end else
+        }//end if (!empty($post_add))
+        else
+        {
+            $data = array('response' => 'error','message'=>'faltan datos');
+        }//end else
+        $this->response($data);
     }//end function insert_user_post()
 
     /*
@@ -233,14 +247,18 @@ class users extends \REST_Controller{
             if ($deleted_user_model && $deleted_post_model)
             {
                 $data = array('response' => 'ok');
-                $this->response($data);
-            }
+            }//end if ($deleted_user_model && $deleted_post_model)
             else
             {
                 $data = array('response' => 'error','message'=>'no se pudo borrar el campo');
-                $this->response($data);
-            }
-        }
+
+            }//end else
+        }//end  if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'faltan datos');
+        }//end else
+        $this->response($data);
     }//end function delete_user_post()
     /*
      * funcion actualizar datos
@@ -274,7 +292,8 @@ class users extends \REST_Controller{
              * compruebo la actualizacion en la tabla usuarios creada por mi
              */
 
-            if ($this->webservice_model->update($this->post('id'), $data)) {
+            if ($this->webservice_model->update($this->post('id'), $data))
+            {
                 $pass = $this->post('password');
                 /*
                  * verifico que exista la contraseña
@@ -282,33 +301,88 @@ class users extends \REST_Controller{
                  * sino hay contraseña lo doy por bueno directamente
                  *
                  */
-                if ($pass != "") {
+                if ($pass != "")
+                {
                     $usuario = array(
                         'password' => $this->post('password')
                     );
                     /*
                     * compruebo la actualizacion a la tabla usuarios de bonfire
                     */
-                    if ($this->user_model->update($this->post('id'), $usuario)) {
+                    if ($this->user_model->update($this->post('id'), $usuario))
+                    {
 
                         $data = array('response' => 'ok');
-                        $this->response($data);
 
-                    } else {//if($this->user_model->update($usuario)) {
+
+                    } //end if ($this->user_model->update($this->post('id'), $usuario))
+                    else
+                    {
                         $data = array('response' => 'error','message'=>'error en update verifica los campos');
-                        $this->response($data);
-                    }
-                } else {//if(isset($pass)){
-                    $data = array('response' => 'ok');
-                    $this->response($data);
-                }
-            } else {// if ($this->webservice_model->update($this->post('id'), $data)) {
-                $data = array('response' => 'error','message'=>'error en update verifica los campos');
-                $this->response($data);
-            }
-        }
 
-    }//end function update_user_post(){
+                    }//end else
+                } // end if ($pass != "")
+                else
+                {
+                    $data = array('response' => 'ok');
+
+                }//end else
+            }//end if ($this->webservice_model->update($this->post('id'), $data))
+            else
+            {
+                $data = array('response' => 'error','message'=>'error en update verifica los campos');
+
+            }//end else
+        }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'faltan datos');
+        }//end else
+        $this->response($data);
+
+    }//end function update_user_post()
+
+    /*
+     * funcion actualizar datos
+     *
+     * funcion que actualiza los datos de un usuario
+     * tanto en la tabla users(bonfire) como en usuarios
+     */
+    public function update_user_password_post()
+    {
+
+        $post_add = $this->post();
+        if($post_add)
+        {
+
+                    $usuario = array(
+                        'password' => $this->post('password')
+                    );
+                    /*
+                    * compruebo la actualizacion a la tabla usuarios de bonfire
+                    */
+                    if ($this->user_model->update($this->post('id_user'), $usuario))
+                    {
+
+                        $data = array('response' => 'ok');
+
+
+                    } //end if ($this->user_model->update($this->post('id_user'), $usuario))
+                    else
+                    {
+                        $data = array('response' => 'error','message'=>'error en update verifica los campos');
+
+                    }//end else
+
+        }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'faltan datos');
+        }//end else
+        $this->response($data);
+
+    }//end function update_user_password_post()
+
     /*
      * funcion verificar usuario
      *
@@ -321,11 +395,14 @@ class users extends \REST_Controller{
     {
         $user   = $this->user_model->find_by(array('email'=>$email,'bf_users.deleted'=>0));
 
-        if($user) {
+        if($user)
+        {
             return array('user'=>$user,'response'=>true);
-        }else{
+        }//end if($user)
+        else
+        {
             return array('response'=>false);
-        }
+        }//end else
     }//end function check_user($email)
     /*
      * funcion que updetea
@@ -341,9 +418,10 @@ class users extends \REST_Controller{
             'slug'   => url_title($slug." ".$idSet,'dash',true)
         );
 
-        if($this->webservice_model->update_where('id_usuario',$idTarjet, $data)) {
+        if($this->webservice_model->update_where('id_usuario',$idTarjet, $data))
+        {
             return true;
-        }
+        }//end if($this->webservice_model->update_where('id_usuario',$idTarjet, $data))
 
     }//end function update_user($idSet,$idTarjet,$slug)
 
