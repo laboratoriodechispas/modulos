@@ -12,12 +12,7 @@ class Eventos extends Front_Controller
 
     //--------------------------------------------------------------------
 
-    public function index()
-    {
 
-
-
-    }
 }
 
 ?>

@@ -1,6 +1,5 @@
 <div class="admin-box" xmlns="http://www.w3.org/1999/html">
-    <h3>Nuevo evento</h3>
-    
+
     <?php echo form_open(current_url(), 'class="form-horizontal"'); ?>
 
     <div class="control-group <?php if (form_error('nombre_evento')) echo 'error'; ?>">
@@ -70,9 +69,9 @@
 
             <select name="tipo_evento" class="input-xlarge"  />
 
-            <?php foreach($tipo_evento['data'] as $key): ?>
+            <?php  foreach($tipo_evento['data'] as $key): ?>
 
-                <?php  if($select == $key->id): ?>
+                <?php   if($select == $key->id): ?>
                     <option value="<?php echo $key->id; ?>" selected="selected">
                     <?php else: ?>
                     <option value="<?php echo $key->id; ?>">

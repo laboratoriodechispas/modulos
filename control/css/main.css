@@ -1,0 +1,228 @@
+/*
+ *Hoja de stilos para el plugin gestión de eventos identidad atleta
+ */
+
+#main-content-plugin{
+    width: 820px;
+	margin:0 auto;
+}
+.frm-principal-eventos{
+	margin: 0 auto;
+    width: 820px;
+}
+.clearing{
+	clear:both;
+}
+h2{
+	color:#21759B;
+	font-size:24px;
+}
+.nuevo-evento-titulo{
+	font-weight:bold; 
+	color:#61380B;
+	font-size:18px;
+}
+
+fieldset {
+border:4px groove #272727 !important; /* Borde */
+background:#E5E5E5 !important; /* Color de fondo */
+color:#000 !important; /* Color del texto de todo el contenido */
+}
+
+legend {
+    background: none repeat scroll 0 0 #FF0000;
+    border: 1px solid #840000 !important;
+    color: #FFFFFF !important;
+    display: block;
+    font-size: 25px !important;
+    padding: 0.3em 1em !important;
+    width: auto;
+}
+
+.pure-button{
+	background:#272727 !important;
+	color:#CCC !important;
+}
+
+.pure-form fieldset{
+	padding:0 30px !important;
+}
+
+.pure-form legend{
+	width:auto !important;
+}
+
+.input-titulo{
+	
+	width:409px;
+	
+    /*padding: 11px 10px;*/
+}
+.input-descripcion{
+	
+	width:400px;
+	
+    /*padding: 11px 10px;*/
+}
+
+
+#navegacion{
+	margin-bottom: 30px;
+}
+
+/*
+ * Codigo libre para usarse en proyectos comerciales y no comerciales.
+ */
+ 
+.lista{	
+	margin:15px 1px;
+}
+
+.lista tr{
+	height:20px;
+}
+
+.lista tr.estatico{
+	background:#f2f2f2;
+}
+
+.lista th,
+.lista td,
+.lista td a{
+	padding:2px;
+	font-size:10px;	
+	vertical-align:top;
+}
+
+
+.lista td a{
+	color:#039;	
+	text-decoration:underline;
+}
+
+.lista td a img{
+	float:left;
+}
+
+.lista td a:hover{
+	text-decoration:underline;
+	color:#999;
+}
+
+.lista th{
+	background: none repeat scroll 0 0 #353535;
+    color: #CCCCCC;
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 20px;
+    text-align: center;
+}
+
+.lista td{
+	border-bottom:1px solid #f2f2f2;
+	line-height:20px;	
+	background:#E5E5E5;
+	font-size:11px;
+	text-align:center;
+}
+
+
+/*Formulario Evento*/
+#frmAddEvento label{
+	margin-top: 10px;
+	width:150px;
+}
+
+.titulo-main{
+	background: none repeat scroll 0 0 #FF0000;
+    color: #FFFFFF;
+    font-size: 20px;
+    height: 15px;
+    margin-bottom: -13px;
+    margin-left: 2px;
+    padding: 15px;
+	-webkit-border-top-left-radius: 15px;
+	-webkit-border-top-right-radius: 15px;
+	-moz-border-radius-topleft: 15px;
+	-moz-border-radius-topright: 15px;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+}
+
+.titulo-main-corto{
+	background: none repeat scroll 0 0 #FF0000;
+    color: #FFFFFF;
+    font-size: 20px;
+    height: 15px;
+    margin-bottom: -13px;
+    margin-left: 2px;
+    padding: 15px;
+	-webkit-border-top-left-radius: 15px;
+	-webkit-border-top-right-radius: 15px;
+	-moz-border-radius-topleft: 15px;
+	-moz-border-radius-topright: 15px;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	width:390px;
+}
+
+
+.nuevo-evento{
+	width:250px;
+	height:250px;
+	background:#F00;
+}
+
+.pure-form-stacked input[type="text"], .pure-form-stacked select{
+	width:285px !important;
+}
+
+.preguntas-evento{
+	 padding: 0.35em 2.625em 2.75em;
+}
+
+.izquierda{
+	text-align:left !important;
+	padding-left:10px !important; 
+	
+}
+
+.modificar-perfil{
+	 padding: 0.35em 2.625em 2.75em;
+}
+
+#formulario-perfil input[type="text"], #formulario-perfil select{
+	display: block;
+    margin: 0.25em 0;
+    -moz-box-sizing: border-box;
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px #DDDDDD inset;
+    display: inline-block;
+    font-size: 0.8em;
+    padding: 0.5em 0.6em;
+    transition: border 0.3s linear 0s;
+	width:250px;
+}
+
+.dia-fecha{
+	width:55px !important;
+}
+
+.mes-fecha{
+	width:120px !important;
+}
+
+.anio-fecha{
+	width:68px !important;
+}
+
+
+#formulario-perfil select{
+	height:27px !important;
+}
+
+.btn-respuestas{
+	
+}
+

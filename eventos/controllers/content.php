@@ -17,9 +17,28 @@ class Content extends Admin_Controller
 
     public function index()
     {
-        $posts = $this->eventos_model->where('deleted', 0)->find_all();
+        if ($this->input->post('submit')) {
+            $array = $this->input->post('checked');
+            $data  = "";
 
-        Template::set('posts', $posts);
+            for($i = 0;$i<=count($array)-1;$i++){
+                if($i!=count($array)-1){
+                    $data .= $array[$i].",";
+                }else{
+                    $data .= $array[$i];
+                }
+
+            }
+
+            $delete = $this->eventos_model->delete($data);
+            if($delete){
+                Template::set_message('You post was successfully saved.', 'success');
+            }
+        }
+        $eventos = $this->eventos_model->where('deleted', 0)->find_all();
+
+        Template::set('toolbar_title', 'Gestion de eventos');
+        Template::set('eventos', $eventos);
 
         Template::render();
     }
@@ -58,13 +77,24 @@ class Content extends Admin_Controller
     }
 
 
-    public function edit_post($id = null)
+    public function editar_evento($id = null)
     {
+        $user         = $this->current_user->id;
+        $tipos_evento = $this->get_tipo_evento();
+
         if ($this->input->post('submit')) {
             $data = array(
-                'title' => $this->input->post('title'),
-                'slug' => $this->input->post('slug'),
-                'body' => $this->input->post('body')
+                'nombre_evento'  => $this->input->post("nombre_evento"),
+                'descripcion'    => $this->input->post("descripcion"),
+                'fecha'          => $this->input->post("fecha"),
+                'ruta'           => $this->input->post("ruta"),
+                'img_destacada'  => $this->input->post("img_destacada"),
+                'img_thumb'      => $this->input->post("img_thumb"),
+                'convocatoria'   => $this->input->post("convocatoria"),
+                'tipo_evento'    => $this->input->post("tipo_evento"),
+                'id_organizador' => $user,
+                'slug'           => url_title($this->input->post("nombre_evento"),'dash',true),
+                'status'         => 1
             );
 
             if ($this->eventos_model->update($id, $data)) {
@@ -76,7 +106,8 @@ class Content extends Admin_Controller
         Template::set('post', $this->eventos_model->find($id));
 
         Template::set('toolbar_title', 'Editar evento');
-        Template::set_view('content/post_form');
+        Template::set('tipo_evento',$tipos_evento);
+        Template::set_view('content/agregar_evento');
         Template::render();
     }
 
