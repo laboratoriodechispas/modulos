@@ -292,6 +292,40 @@ class Gestion_eventos extends \REST_Controller{
         $this->response($data);
     }//end function get_info_evento_post()
 
+    /*
+     * obtener informacion del evento
+     *
+     * funcion encargada de retornar detalles del evento
+     * a travez del nombre del mismo
+     * este metodo se encargade traer todo el array del evento
+     * y puede ser usado con dos propositos:
+     * 1. traer el array completo para x fin
+     * 2. comporbar la existencia de un nombre(evitar duplicados)
+     */
+    public function get_info_evento_by_id_post()
+    {
+        $post_add = $this->post();
+        if($post_add)
+        {
+            $id = $this->post('id');
+        $evento   = $this->eventos_model->find_by(array('id'=>$id,'bf_tbl_eventos.deleted'=>0));//compruebo que no tenga staus delete
+
+        if($evento)
+        {
+            $data = array('response'=>true,'data'=>$evento);
+        }//end if($evento)
+        else
+        {
+            $data = array('response'=>false);
+        }//end else
+        }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'Sin datos');
+
+        }//end else
+        $this->response($data);
+    }//end function get_info_evento_post()
 
 
     /*

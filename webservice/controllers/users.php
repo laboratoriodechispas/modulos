@@ -15,6 +15,7 @@ class users extends \REST_Controller{
         parent::__construct();
         $this->load->library('users/auth');
         $this->load->model('webservice_model');
+        $this->load->model('token_model');
     }
 
     /*
@@ -59,29 +60,29 @@ class users extends \REST_Controller{
             $pass = $this->post('password') ? $this->post('password') : 'null';
 
 
-                $user = $this->check_user($email);
+            $user = $this->check_user($email);
 
-                if ($user['response'])
+            if ($user['response'])
+            {
+
+                if ($this->auth->check_password($pass, $user['user']->password_hash))
                 {
 
-                    if ($this->auth->check_password($pass, $user['user']->password_hash))
-                    {
-
-                        unset($user['user']->password_hash);
-                        unset($user['user']->language);
-                        $data = array('response' => 'ok','data'=>$user);
-                    }//end if ($this->auth->check_password($pass, $user['user']->password_hash))
-                    else
-                    {
-                        $data = array('response' => 'error');
-
-                    }//end else
-                }//end if ($user['response'])
+                    unset($user['user']->password_hash);
+                    unset($user['user']->language);
+                    $data = array('response' => 'ok','data'=>$user);
+                }//end if ($this->auth->check_password($pass, $user['user']->password_hash))
                 else
                 {
-                    $data = array('response' => 'error','message'=>'Usuario no encontrado');
+                    $data = array('response' => 'error');
 
                 }//end else
+            }//end if ($user['response'])
+            else
+            {
+                $data = array('response' => 'error','message'=>'Usuario no encontrado');
+
+            }//end else
 
 
         }//end  if($post_add)
@@ -140,8 +141,10 @@ class users extends \REST_Controller{
             $email = $this->post('email') ? $this->post('email') : 'null';
             if($email == 'null')
             {
+
                 $data = array('response'=>'error','mesagge'=>'Falta correo');
                 $this->response($data);
+
             }//end if($email == 'null')
             $user = $this->check_user($this->post('email'));
             if($user['response'])
@@ -167,7 +170,7 @@ class users extends \REST_Controller{
                 'id_estado_residencia' => 10,
                 'id_estado'            => 10,
                 'codigo'               => 10,
-                'status'               => 10,
+                'status'               => 0,
                 'idUser'               => 0,
                 'slug'                 => "null"
             );
@@ -194,7 +197,7 @@ class users extends \REST_Controller{
                      */
                     if ($this->update_user($idUsuario->id, $idTarjet->id_usuario,$slug))
                     {
-                        $data = array('response'=>'ok');
+                        $data = array('response'=>'ok','id_user'=>$idTarjet->id_usuario);
 
 
                         /*
@@ -355,24 +358,24 @@ class users extends \REST_Controller{
         if($post_add)
         {
 
-                    $usuario = array(
-                        'password' => $this->post('password')
-                    );
-                    /*
-                    * compruebo la actualizacion a la tabla usuarios de bonfire
-                    */
-                    if ($this->user_model->update($this->post('id_user'), $usuario))
-                    {
+            $usuario = array(
+                'password' => $this->post('password')
+            );
+            /*
+            * compruebo la actualizacion a la tabla usuarios de bonfire
+            */
+            if ($this->user_model->update($this->post('id_user'), $usuario))
+            {
 
-                        $data = array('response' => 'ok');
+                $data = array('response' => 'ok');
 
 
-                    } //end if ($this->user_model->update($this->post('id_user'), $usuario))
-                    else
-                    {
-                        $data = array('response' => 'error','message'=>'error en update verifica los campos');
+            } //end if ($this->user_model->update($this->post('id_user'), $usuario))
+            else
+            {
+                $data = array('response' => 'error','message'=>'error en update verifica los campos');
 
-                    }//end else
+            }//end else
 
         }//end if($post_add)
         else
@@ -383,6 +386,159 @@ class users extends \REST_Controller{
 
     }//end function update_user_password_post()
 
+    /**
+     * Generar un token
+     *
+     * Funcion encargada de generar un token en la tabla token
+     * asociado con un email
+     */
+    public  function insert_token_post()
+    {
+        $post_add = $this->post();
+        if($post_add)
+        {
+
+            $token = array(
+                'token'   => $this->post('token'),
+                'id_user' => $this->post('id')
+            );
+
+            if ($this->token_model->insert($token))
+            {
+
+                $data = array('response' => 'ok');
+
+
+            } //end if ($this->token_model->insert($usuario))
+            else
+            {
+                $data = array('response' => 'error','message'=>'error en update verifica los campos');
+
+            }//end else
+
+        }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'faltan datos');
+        }//end else
+        $this->response($data);
+    }
+
+
+    /**
+     * restablecer password
+     *
+     * Restablece una contraseña a travez de un token
+     * primero verifica la existencia de dicho token
+     */
+    public function update_user_pass_by_token_post()
+    {
+
+        $post_add = $this->post();
+        if($post_add)
+        {
+
+            $pass = array(
+                'password' => $this->post('password')
+            );
+            $id    = $this->post('id');
+            $token = $this->post('token');
+            $user  = $this->compare_token($token);
+
+            if($user['id'] == $id)
+            {
+
+                $update = $this->user_model->update($id,$pass);
+                /*
+                 * compruebo la actualizacion a la tabla usuarios de bonfire
+                 */
+                if ($update) {
+                    $this->token_model->delete_where(['token'=>$token]);
+                    $data = array('response' => 'ok');
+
+
+                } //end if ($this->user_model->update($this->post('id_user'), $usuario))
+                else {
+                    $data = array('response' => 'error', 'message' => 'error en update verifica los campos');
+
+                }//end else
+
+            }//end if($user == $email)
+            else
+            {
+                $data = array('response' => 'error', 'message' => 'error el token es erroneo');
+            }
+
+        }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'faltan datos');
+        }//end else
+        $this->response($data);
+    }
+
+    /**
+     * restablecer password
+     *
+     * Restablece una contraseña a travez de un token
+     * primero verifica la existencia de dicho token
+     */
+    public function update_user_status_post()
+    {
+
+        $post_add = $this->post();
+        if($post_add)
+        {
+            $status = array(
+                'status' => 1
+            );
+
+            $id    = $this->post('id');
+            $token = $this->post('token');
+            $user  = $this->compare_token($token);
+
+            if($user['id'] == $id) {
+                $user = $this->user_model->find_by(array('id' => $id, 'bf_users.deleted' => 0));
+
+                if ($user)
+                {
+
+                    $update = $this->webservice_model->update_where('idUser', $user->id, $status);
+                    /*
+                     * compruebo la actualizacion a la tabla usuarios de bonfire
+                     */
+                    if ($update) {
+                        $this->token_model->delete_where(['token' => $token]);
+                        $data = array('response' => 'ok');
+
+
+                    } //end if ($this->user_model->update($this->post('id_user'), $usuario))
+                    else {
+                        $data = array('response' => 'error', 'message' => 'error en update verifica los campos');
+
+                    }//end else
+                }else
+                {
+                    $data = array('response' => 'error', 'message' => 'el email no existe');
+                }
+            }//end if($user == $email)
+            else
+            {
+                $data = array('response' => 'error', 'message' => 'error el token es erroneo');
+            }
+
+        }//end if($post_add)
+        else
+        {
+            $data = array('response' => 'error','message'=>'faltan datos');
+        }//end else
+        $this->response($data);
+    }
+
+    /**********************************************************************************************************
+     *                                          Funciones reservadas                                          *
+     **********************************************************************************************************/
+
     /*
      * funcion verificar usuario
      *
@@ -391,11 +547,11 @@ class users extends \REST_Controller{
      * y un response true si el usuario se encuentra y false
      * sino esta en base de datos
      */
-    private function check_user($email)
+    protected function check_user($email)
     {
-        $user   = $this->user_model->find_by(array('email'=>$email,'bf_users.deleted'=>0));
-
-        if($user)
+        $user   = $this->user_model->find_by(array('email' => $email,'bf_users.deleted'=>0));
+        $user_2 = $this->webservice_model->find_by(array('email' => $email,'bf_usuarios.status'=>1));
+        if($user || $user_2)
         {
             return array('user'=>$user,'response'=>true);
         }//end if($user)
@@ -410,19 +566,56 @@ class users extends \REST_Controller{
      * hace un update del slug y del id para que ambos coincidan
      * id de tabla users(bonfire) y usuarios
      */
-    private function update_user($idSet,$idTarjet,$slug)
+    protected function update_user($idSet,$idTarjet,$slug)
     {
+
 
         $data = array(
             'idUser' => $idSet,
             'slug'   => url_title($slug." ".$idSet,'dash',true)
         );
 
-        if($this->webservice_model->update_where('id_usuario',$idTarjet, $data))
+
+        if($this->db->update('usuarios',$data,["id_usuario"=>$idTarjet]))
         {
             return true;
         }//end if($this->webservice_model->update_where('id_usuario',$idTarjet, $data))
 
     }//end function update_user($idSet,$idTarjet,$slug)
+
+
+    /**
+     * @param $token
+     * @return array
+     *
+     * verifica que exista un token
+     *
+     * Devuelve el email si un token existe en base de datos
+     *
+     */
+    protected  function compare_token($token)
+    {
+        if($token)
+        {
+            $user = $this->token_model->where(array('bf_users.deleted'=>0,'token'=>$token,'bf_tbl_token.deleted'=>0))->
+            join('bf_users','bf_users.id = bf_tbl_token.id_user')->find_all();
+
+            if($user){
+
+                $data = array('id'=>$user[0]->id);
+            }else{
+                $data = array('id'=>'');
+            }
+
+        }//end if($token)
+        else
+        {
+            $data = array('message'=> 'error');
+        }//end else
+
+        return $data;
+    }
+
+
 
 } 
