@@ -1,5 +1,5 @@
 <?php
-class Migration_pago_eventos extends Migration
+class Migration_tipo_pagos extends Migration
 {
     /*
      * funcion para subir las tablas

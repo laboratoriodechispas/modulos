@@ -8,6 +8,7 @@ $this->load->dbforge();
 
 $this->dbforge->add_field('id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT');
 $this->dbforge->add_field('titulo VARCHAR(255) NOT NULL');
+    $this->dbforge->add_field('slug VARCHAR(50) NOT NULL');
     $this->dbforge->add_field('imagen VARCHAR(255) NOT NULL');
 $this->dbforge->add_field('created_on DATETIME NOT NULL');
 $this->dbforge->add_field('modified_on DATETIME NULL');

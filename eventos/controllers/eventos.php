@@ -210,7 +210,7 @@ class Eventos extends Admin_Controller
             );
 
 
-
+            $insert = $this->eventos_model->update($id, $data);
             if ($this->eventos_model->update($id, $data)) {
                 $data_convocatoria = array();
 
@@ -327,12 +327,17 @@ class Eventos extends Admin_Controller
 
                                 }
 
-                                if($this->relacion_preg_resp_model->insert_batch($relacion))
-                                    Template::set_message('El evento se guardo correctamente.', 'success');
-                                redirect('/eventos');
+                                if($this->relacion_preg_resp_model->insert_batch($relacion)) {
+                                    Template::set_message('las respuestas se insertaron correctamente.', 'success');
+
+                                }
                             }
                         }
-
+                        else
+                        {
+                            Template::set_message('El evento se guardo correctamente.', 'success');
+                            redirect('/eventos');
+                        }
 
                     }
 

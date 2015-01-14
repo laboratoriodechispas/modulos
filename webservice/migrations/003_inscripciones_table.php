@@ -16,6 +16,7 @@ class Migration_inscripciones_table extends Migration
         $this->dbforge->add_field('id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT');
         $this->dbforge->add_field('id_usuario INT(11) NOT NULL');
         $this->dbforge->add_field('id_evento INT(11) NOT NULL');
+        $this->dbforge->add_field('id_requerimiento INT(11) NOT NULL');
         $this->dbforge->add_field('fecha_inscripcion VARCHAR(255) NOT NULL');
         $this->dbforge->add_field('fuente_subscripcion VARCHAR(255) NOT NULL');
         $this->dbforge->add_field('tipo_pago INT(11) NOT NULL');

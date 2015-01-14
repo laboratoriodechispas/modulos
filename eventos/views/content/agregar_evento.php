@@ -53,16 +53,16 @@
 
         foreach ($convocatorias['data'] as $key):
             $titulo    = strtolower ($key->titulo);
-            $titulo_sp = str_replace(array('ó','ò','ô','õ','ö','º'),"o",$titulo);
+
         ?>
 
 
-        <label for="<?php echo $titulo_sp; ?>" class="title" ></label>
+        <label for="<?php echo $key->slug; ?>" class="title" ></label>
             <div>
-                <label for="<?php echo $titulo_sp; ?>" class="title" ><?php echo ucfirst($titulo); ?></label>
+                <label for="<?php echo $key->slug; ?>" class="title" ><?php echo ucfirst($titulo); ?></label>
 
-            <textarea name="<?php echo $titulo_sp; ?>" class="input-xxlarge" rows="15"><?php echo isset($key->contenido) ? $key->contenido : '' ?></textarea>
-            <input type="hidden" name="id-<?php echo $titulo_sp; ?>" value="<?php echo $key->id; ?>">
+            <textarea name="<?php echo $key->slug; ?>" class="input-xxlarge" rows="15"><?php echo isset($key->contenido) ? $key->contenido : '' ?></textarea>
+            <input type="hidden" name="id-<?php echo $key->slug; ?>" value="<?php echo $key->id; ?>">
 
 
             </div>
