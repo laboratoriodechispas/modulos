@@ -6,7 +6,7 @@
  * Time: 12:52 PM
  */
 
-class gestion_inscripciones extends \REST_Controller
+class gestion_conekta extends \REST_Controller
 {
     /*
      * constructor
@@ -32,7 +32,7 @@ class gestion_inscripciones extends \REST_Controller
      * en la tabla tbl_inscripciones retorna ok si se realiza correctamente
      * o error + el mensaje de error correspondiente
      */
-    public function add_inscripcion_post()
+    public function add_inscripcion_conekta_post()
     {
 
         $post_add = $this->post();
@@ -40,14 +40,16 @@ class gestion_inscripciones extends \REST_Controller
         if($post_add)
         {
             $data = array(
-                'id_usuario'          => $this->post("id_usuario"),
+                'id_inscripcion'      => $this->post("id_inscripcion"),
                 'id_evento'           => $this->post("id_evento"),
-                'fecha_inscripcion'   => $this->post("fecha_inscripcion"),
-                'fuente_subscripcion' => $this->post("fuente_subscripcion"),
-                'tipo_pago'           => $this->post("tipo_pago")
+                'correo'              => $this->post("correo"),
+                'status'              => 0,
+                'cantidad_pago'       => $this->post("cantidad_pago"),
+                'pais'                => $this->post("pais"),
+                'fecha_operacion'     => date('d-m-Y H:i:s')
             );
 
-            $inscripcion = $this->inscripciones_model->insert($data);
+            $inscripcion = $this->conekta_model->insert($data);
             /*verifico la insercion*/
             if ($inscripcion)
             {
@@ -69,27 +71,71 @@ class gestion_inscripciones extends \REST_Controller
         $this->response($data);
     }// end function add_inscripcion_post()
 
-    /*
-     * obtiene inscripciones
+
+    /**
+     * agrega un pago a conekta
      *
-     * Funcion encargada de traer inscripciones acordes a un evento
-     * es necesario el id, devuelve un ok si tiene exito o un error
-     * mas el mensaje de error
+     * Funcion encargada de agregar el pago de un usuario en conekta
+     * es necesario el id de la inscripcion(funcion de arriba)
      */
-    public function get_inscripcion_post()
+    public function add_pago_conekta_post()
+    {
+
+        $post_add = $this->post();
+        /*verifico que haya datos post*/
+        if($post_add)
+        {
+            $data = array(
+                'id_transaccion'      => $this->post("id_transaccion"),
+                'codigo_barras'       => $this->post("codigo_barras"),
+                'url_codigo_barras'   => $this->post("url_codigo_barras"),
+                'referencia'          => $this->post("referencia"),
+                'fecha_expiracion'    => $this->post("fecha_expiracion"),
+                'origen'              => $this->post("origen"),
+                'numero_servicio'     => $this->post("numero_servicio")
+            );
+
+            $inscripcion = $this->conekta_model->update($this->post("id_conekta"),$data);
+            /*verifico la insercion*/
+            if ($inscripcion)
+            {
+                $data = array('response' => 'ok');
+
+            }//if ($this->inscripciones_model->insert($data))
+            else
+            {
+                $data = array('response' => 'error','message'=>'La insercion no se pudo realizar');
+
+            }//end else
+        }//end if($post_add) {
+        else
+        {
+            $data = array('response' => 'error','message'=>'Sin datos');
+
+        }//end else
+
+        $this->response($data);
+    }// end function add_inscripcion_post()
+
+    /*
+     * cambia status
+     *
+     * Funcion encargada de cambiar el status de 0 a 1
+     * sugerencia de uso en un cron
+     */
+    public function update_status_post()
     {
 
         $post_add = $this->post();
         if($post_add)
         {
-            $id_evento = $this->post("id_evento");
-            $inscripciones = $this->inscripciones_model->where(array('deleted'=>0,'id_evento'=>$id_evento))->find_all();
-            if($inscripciones)
+            $id_conekta = $this->post("id_conekta");
+
+            $status = $this->conekta_model->update($id_conekta,array('status'=>1));
+            if($status)
             {
 
-                unset($inscripciones[0]->id);
-
-                $data = array('response' => 'ok','data'=>$inscripciones);
+                $data = array('response' => 'ok');
             } //end if($inscripciones)
             else
             {
@@ -291,12 +337,12 @@ class gestion_inscripciones extends \REST_Controller
     }//end function get_tipo_pago_post()
 
 
-/**
- * quitar asociaciacion
- *
- * Funcion encargada de quitar una asociacion de pago/evento
- * no elimina el campo solo cambia el status delete a 1
- */
+    /**
+     * quitar asociaciacion
+     *
+     * Funcion encargada de quitar una asociacion de pago/evento
+     * no elimina el campo solo cambia el status delete a 1
+     */
 
     public function delete_asociacion_post(){
         $post_add = $this->post();

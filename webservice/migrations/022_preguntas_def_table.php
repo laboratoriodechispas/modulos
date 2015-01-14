@@ -14,8 +14,9 @@ class Migration_preguntas_def_table extends Migration
         $this->load->dbforge();
 
         $this->dbforge->add_field('id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT');
+        $this->dbforge->add_field('id_evento BIGINT(20) UNSIGNED NOT NULL');
         $this->dbforge->add_field('pregunta VARCHAR(255) NOT NULL');
-        $this->dbforge->add_field('id_evento INT(11) NOT NULL');
+        $this->dbforge->add_field('tipo ENUM(radio,select,check,open) NOT NULL');
         $this->dbforge->add_field('created_on DATETIME NOT NULL');
         $this->dbforge->add_field('modified_on DATETIME NULL');
         $this->dbforge->add_field('deleted TINYINT(1) NOT NULL DEFAULT 0');

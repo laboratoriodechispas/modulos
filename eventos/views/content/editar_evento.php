@@ -1,6 +1,6 @@
 <div class="admin-box" xmlns="http://www.w3.org/1999/html">
 
-    <?php echo form_open(current_url(), 'class="form-horizontal"'); ?>
+   <?php echo form_open(current_url(), 'class="form-horizontal"'); ?>
 
     <div class="control-group <?php if (form_error('nombre_evento')) echo 'error'; ?>">
         <label for="title">Nombre</label>
@@ -66,7 +66,9 @@
 
 
             </div>
-<?php endforeach; ?>
+<?php endforeach;
+
+        ?>
 
 
 </div>
@@ -98,6 +100,64 @@
         </div>
     </div>
 
+
+
+    <!-- preguntas y respuestas -->
+
+    <?php
+    $counter   = 1;
+
+    foreach($answers['data'] as $answer)
+    {
+        ?>
+        <input type="text" value="<?= $answer->pregunta; ?>" name="update-pregunta[]">
+
+        <label>Tipo <?= $answer->tipo;?> </label>
+<?php
+
+
+        switch ($answer->tipo) {
+            case 'radio':
+                $data = '';
+                $answers = explode('|', $answer->respuesta);
+
+                for($i = 0;$i<=count($answers)-1;$i++) {
+
+                    $data .= '<input type="text" name="update-respuesta-'.$counter.'[]" value="'.$answers[$i].'"><br/>';
+
+                }
+                $counter++;
+                break;
+            case 'select':
+                $data = '';
+                $answers = explode('|', $answer->respuesta);
+
+                for($i = 0;$i<=count($answers)-1;$i++) {
+                    $data .= '<input type="text" name="update-respuesta-'.$counter.'[]" value="'.$answers[$i].'"><br/>';
+                }
+                $counter++;
+                break;
+            case 'check':
+                $data = '';
+                $answers = explode('|', $answer->respuesta);
+
+                for($i = 0;$i<=count($answers)-1;$i++) {
+                    $data .= '<input type="text" name="update-respuesta-'.$counter.'[]" value="'.$answers[$i].'"><br/>';
+                }
+                $counter++;
+                break;
+            case 'open':
+                    $data = '';
+
+                break;
+
+        }
+        echo $data;
+        ?>
+        <input type="hidden" value="<?= $answer->id_pregunta; ?>" name="id_preguntas[]">
+        <input type="hidden" value="<?= $answer->id_respuesta; ?>" name="id_respuestas[]">
+    <?php
+    } ?>
     <div class="control-group">
         <label for="img_destacada">Preguntas a los deportistas</label>
         <p class="help-block">Preguntas que se haran en la convocatoria a la hora de que un usuario se registre ej. ¿que marca de tenis llevaras a la carrera?</p>

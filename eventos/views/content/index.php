@@ -23,9 +23,9 @@
         <?php if (isset($eventos) && is_array($eventos)) :?>
             <?php foreach ($eventos as $evento) : ?>
                 <tr>
-                    <td><input type="checkbox" name="checked[]" value="<?php echo $evento->id ?>" /></td>
+                    <td><input type="checkbox" name="checked[ ]" value="<?php echo $evento->id ?>" /></td>
                     <td>
-                        <a href="<?php echo site_url(SITE_AREA .'/content/eventos/editar_evento/'. $evento->id) ?>">
+                        <a href="<?php echo site_url('eventos/editar_evento/'. $evento->id) ?>">
                             <?php e($evento->nombre_evento); ?>
                         </a>
                     </td>

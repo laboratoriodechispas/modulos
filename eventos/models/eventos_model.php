@@ -31,12 +31,6 @@ class Eventos_model extends MY_Model
         ),
 
         array(
-            'field' => 'ruta',
-            'label' => 'Ruta',
-            'rules' => 'trim|strip_tags|xss_clean'
-        ),
-
-        array(
             'field' => 'img_thumb',
             'label' => 'Imagen miniatura',
             'rules' => 'trim|strip_tags|xss_clean'
@@ -45,12 +39,6 @@ class Eventos_model extends MY_Model
         array(
             'field' => 'img_destacada',
             'label' => 'Imagen destacada',
-            'rules' => 'trim|strip_tags|xss_clean'
-        ),
-
-        array(
-            'field' => 'convocatoria',
-            'label' => 'Convocatoria',
             'rules' => 'trim|strip_tags|xss_clean'
         ),
 
@@ -64,7 +52,8 @@ class Eventos_model extends MY_Model
             'field' => 'descripcion',
             'label' => 'Descripcion',
             'rules' => 'trim|strip_tags|xss_clean'
-        )
+        ),
+
     );
 
     protected $insert_validation_rules = array(
@@ -72,7 +61,6 @@ class Eventos_model extends MY_Model
         'fecha'         => 'required',
         'img_thumb'     => 'required',
         'img_destacada' => 'required',
-        'convocatoria'  => 'required',
         'tipo_evento'   => 'required',
         'descripcion'   => 'required'
 

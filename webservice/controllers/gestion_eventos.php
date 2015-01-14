@@ -21,6 +21,9 @@ class Gestion_eventos extends \REST_Controller{
         $this->load->library('users/auth');
         $this->load->model('eventos_model');
         $this->load->model('tipo_evento_model');
+        $this->load->model('convocatorias_model');
+        $this->load->model('tit_convocatoria_model');
+        $this->load->model('preguntas_def_model');
     }//end function __construct(){
 
 
@@ -32,7 +35,8 @@ class Gestion_eventos extends \REST_Controller{
      */
     public function get_all_evento_post()
     {
-        $eventos = $this->eventos_model->where('deleted', 0)->order_by("created_on", "desc")->find_all();
+        $eventos        = $this->eventos_model->where('deleted', 0)->order_by("created_on", "desc")->find_all();
+
 
         $data = array('response' => 'ok','data'=>$eventos);
         $this->response($data);
@@ -296,11 +300,10 @@ class Gestion_eventos extends \REST_Controller{
      * obtener informacion del evento
      *
      * funcion encargada de retornar detalles del evento
-     * a travez del nombre del mismo
+     * a travez del id del mismo
      * este metodo se encargade traer todo el array del evento
-     * y puede ser usado con dos propositos:
-     * 1. traer el array completo para x fin
-     * 2. comporbar la existencia de un nombre(evitar duplicados)
+     * y puede ser usado para traer el array completo para x fin
+     *
      */
     public function get_info_evento_by_id_post()
     {
@@ -308,11 +311,38 @@ class Gestion_eventos extends \REST_Controller{
         if($post_add)
         {
             $id = $this->post('id');
-        $evento   = $this->eventos_model->find_by(array('id'=>$id,'bf_tbl_eventos.deleted'=>0));//compruebo que no tenga staus delete
 
-        if($evento)
+            $eventos        = $this->eventos_model->where(array('deleted'=> 0,'id'=>$id))->find_all();
+            $convocatorias  = $this->convocatorias_model->where(array('tbl_convocatorias.deleted'=>0,'tbl_convocatorias.id_evento'=>$id))
+                ->join('tbl_tit_convocatoria','tbl_tit_convocatoria.id = tbl_convocatorias.id_tit_convocatoria')->find_all();
+
+
+
+        if($eventos)
         {
-            $data = array('response'=>true,'data'=>$evento);
+            $data_eventos       = array();
+            $data_convocatorias = array();
+            $sum                = array();
+
+            foreach($eventos as $evento)
+            {
+
+                foreach($convocatorias as $convocatoria)
+                {
+                    if($evento->id == $convocatoria->id_evento)
+                    {
+                        array_push($data_convocatorias,$convocatoria);
+                    }
+
+                }
+                array_push($data_eventos,$evento);
+
+                array_push($sum,array_merge(array('datos'=>$data_eventos),array('bases'=>$data_convocatorias)));
+
+                $data_convocatorias=array();
+                $data_eventos=array();
+            }
+            $data =  array('response' => 'ok','data'=>$sum);
         }//end if($evento)
         else
         {
@@ -551,4 +581,4 @@ class Gestion_eventos extends \REST_Controller{
     }//end function  delete_evento_post(){
 
 
-} 
+}

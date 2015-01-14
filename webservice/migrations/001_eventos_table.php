@@ -21,7 +21,6 @@ class Migration_eventos_table extends Migration
         $this->dbforge->add_field('ruta VARCHAR(255) NOT NULL');
         $this->dbforge->add_field('img_thumb VARCHAR(255) NOT NULL');
         $this->dbforge->add_field('img_destacada VARCHAR(255) NOT NULL');
-        $this->dbforge->add_field('convocatoria TEXT NOT NULL');
         $this->dbforge->add_field('tipo_evento INT(5) NOT NULL');
         $this->dbforge->add_field('id_organizador INT(11) NOT NULL');
         $this->dbforge->add_field('id_post INT(10) NOT NULL');

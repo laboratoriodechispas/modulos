@@ -28,11 +28,12 @@ class users extends \REST_Controller{
         $post_add = $this->post();
         if($post_add)
         {
+
             $user = $this->user_model->find_by(array('email'=> $this->post('email'),'bf_users.deleted'=>0));
             if ($user)
             {
                 $data = $user;
-                $this->response($data);
+                $this->response(array('response'=>'ok','data'=>$data));
             }//end if ($user)
             else
             {
@@ -59,31 +60,40 @@ class users extends \REST_Controller{
             $email = $this->post('email') ? $this->post('email') : 'null';
             $pass = $this->post('password') ? $this->post('password') : 'null';
 
-
-            $user = $this->check_user($email);
-
-            if ($user['response'])
+            if($email!='null')
             {
 
-                if ($this->auth->check_password($pass, $user['user']->password_hash))
+                if ($pass != 'null')
                 {
+                    $user = $this->check_user($email);
 
-                    unset($user['user']->password_hash);
-                    unset($user['user']->language);
-                    $data = array('response' => 'ok','data'=>$user);
-                }//end if ($this->auth->check_password($pass, $user['user']->password_hash))
+                    if ($user['response']) {
+
+                        if ($this->auth->check_password($pass, $user['user']->password_hash)) {
+
+                            unset($user['user']->password_hash);
+                            unset($user['user']->language);
+                            $data = array('response' => 'ok', 'data' => $user);
+                        }//end if ($this->auth->check_password($pass, $user['user']->password_hash))
+                        else {
+                            $data = array('response' => 'Error', 'message' => 'El password es incorrecto');
+
+                        }//end else
+                    }//end if ($user['response'])
+                    else {
+                        $data = array('response' => 'error', 'message' => 'Usuario no encontrado');
+
+                    }//end else
+                }//end if ($pass != 'null')
                 else
                 {
-                    $data = array('response' => 'error');
-
-                }//end else
-            }//end if ($user['response'])
+                    $data = array('response' => 'Error', 'message' => 'Debes introducir una contraseña');
+                }
+            }//end  if($email!='null')
             else
             {
-                $data = array('response' => 'error','message'=>'Usuario no encontrado');
-
-            }//end else
-
+                $data = array('response' => 'Error', 'message' => 'Debes introducir tu correo');
+            }
 
         }//end  if($post_add)
         else
@@ -524,7 +534,7 @@ class users extends \REST_Controller{
             }//end if($user == $email)
             else
             {
-                $data = array('response' => 'error', 'message' => 'error el token es erroneo');
+                $data = array('response' => 'error', 'message' => 'error el token es erroneo o ya estas registrado');
             }
 
         }//end if($post_add)
@@ -597,8 +607,8 @@ class users extends \REST_Controller{
     {
         if($token)
         {
-            $user = $this->token_model->where(array('bf_users.deleted'=>0,'token'=>$token,'bf_tbl_token.deleted'=>0))->
-            join('bf_users','bf_users.id = bf_tbl_token.id_user')->find_all();
+            $user = $this->token_model->where(array('bf_users.deleted'=>0,'token'=>$token,'tbl_token.deleted'=>0))->
+            join('bf_users','bf_users.id = tbl_token.id_user')->find_all();
 
             if($user){
 
